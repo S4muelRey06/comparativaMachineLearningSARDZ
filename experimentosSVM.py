@@ -106,13 +106,6 @@ mejor_resultado_C = tabla_C.loc[mejor_indice_C]
 print("\nMEJOR CONFIGURACIÓN C")
 print(mejor_resultado_C.to_string())
 
-# 8. EXPORTAR RESULTADOS DE C
-
-tabla_C.to_csv(
-    "resultados_experimentosSVM.csv",
-    index=False
-)
-
 print("\nResultados de C guardados.")
 
 # 9. DEFINIR EXPERIMENTOS 
