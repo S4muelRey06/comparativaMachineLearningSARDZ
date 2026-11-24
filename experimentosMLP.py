@@ -1,5 +1,7 @@
 
 import pandas as pd
+import matplotlib.pyplot as plt
+from pathlib import Path
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -190,3 +192,49 @@ tabla.to_csv(
 )
 
 print("\nResultados guardados en resultados_regularizacion.csv")
+
+# ==========================================
+# 9. GRAFICAR LOS RESULTADOS
+# ==========================================
+
+carpeta_graficas = Path("graficas")
+carpeta_graficas.mkdir(exist_ok=True)
+
+# Comparar las métricas obtenidas para cada valor de regularización.
+metricas = ["Accuracy", "Precision", "Recall", "F1-score"]
+fig, ax = plt.subplots(figsize=(9, 5))
+
+for metrica in metricas:
+    ax.plot(tabla["Alpha"], tabla[metrica], marker="o", label=metrica)
+
+ax.set_xscale("log")
+ax.set_ylim(0, 1.05)
+ax.set_title("Métricas de validación según la regularización (MLP)")
+ax.set_xlabel("Alpha (escala logarítmica)")
+ax.set_ylabel("Puntuación")
+ax.grid(True, alpha=0.3)
+ax.legend()
+fig.tight_layout()
+fig.savefig(carpeta_graficas / "metricas_vs_alpha_mlp.png", dpi=150)
+plt.close(fig)
+
+# Mostrar el costo final y cuántas iteraciones necesitó cada experimento.
+fig, ax1 = plt.subplots(figsize=(9, 5))
+ax1.plot(tabla["Alpha"], tabla["Iteraciones"], color="tab:blue", marker="o")
+ax1.set_xscale("log")
+ax1.set_xlabel("Alpha (escala logarítmica)")
+ax1.set_ylabel("Iteraciones", color="tab:blue")
+ax1.tick_params(axis="y", labelcolor="tab:blue")
+ax1.grid(True, alpha=0.3)
+
+ax2 = ax1.twinx()
+ax2.plot(tabla["Alpha"], tabla["Loss final"], color="tab:orange", marker="s")
+ax2.set_ylabel("Pérdida final", color="tab:orange")
+ax2.tick_params(axis="y", labelcolor="tab:orange")
+
+ax1.set_title("Convergencia del MLP según la regularización")
+fig.tight_layout()
+fig.savefig(carpeta_graficas / "convergencia_vs_alpha_mlp.png", dpi=150)
+plt.close(fig)
+
+print(f"Gráficas guardadas en la carpeta {carpeta_graficas}")
